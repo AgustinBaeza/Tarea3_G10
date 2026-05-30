@@ -1,7 +1,8 @@
 package Logica;
 
-import Logica.moneda.Moneda;
-import Logica.producto.Producto;
+import Logica.excepciones.*;
+import Logica.moneda.*;
+import Logica.producto.*;
 
 /**
  * Clase que se encarga de simular un comprador.
@@ -28,7 +29,7 @@ public class Comprador {
         Moneda mon;
 
         try {
-            prod1 = exp.comprarProducto(m, numeroProducto);
+            exp.comprarProducto(m, numeroProducto);
 
             if (prod1 != null) {
                 sabor = prod1.consumir();

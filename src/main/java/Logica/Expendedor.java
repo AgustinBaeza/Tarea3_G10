@@ -1,11 +1,8 @@
 package Logica;
 
 
-import Logica.excepciones.NoHayProductoException;
-import Logica.excepciones.PagoIncorrectoException;
-import Logica.excepciones.PagoInsuficienteException;
-import Logica.moneda.Moneda;
-import Logica.moneda.Moneda100;
+import Logica.excepciones.*;
+import Logica.moneda.*;
 import Logica.producto.*;
 
 /**
@@ -22,7 +19,9 @@ public class Expendedor {
     private Deposito<Dulce> super8;
     private Deposito<Dulce> snickers;
     private Deposito<Moneda> monVu;
-
+    private Deposito<Moneda> monRec;
+    private DepositoProducto productoComprado;
+    private static int contadorSerie = 0;
 
     /**
      * Constructor de la clase Expendedor.
@@ -37,13 +36,19 @@ public class Expendedor {
         this.super8 = new Deposito<Dulce>();
         this.snickers = new Deposito<Dulce>();
         this.monVu = new Deposito<Moneda>();
+        this.monRec = new Deposito<Moneda>();
+        this.productoComprado = new DepositoProducto();
 
+        rellenarDepositos(cantidad);
+    }
+
+    public void rellenarDepositos(int cantidad){
         for (int i = 0; i < cantidad; i++) {
-            coca.add(new CocaCola(100 + i));
-            sprite.add(new Sprite(200 + i));
-            fanta.add(new Fanta(300+  i));
-            super8.add(new Super8(400+  i));
-            snickers.add(new Snickers(500+  i));
+            coca.add(new CocaCola(contadorSerie++));
+            sprite.add(new Sprite(contadorSerie++));
+            fanta.add(new Fanta(contadorSerie++));
+            super8.add(new Super8(contadorSerie++));
+            snickers.add(new Snickers(contadorSerie++));
         }
     }
 
@@ -60,6 +65,11 @@ public class Expendedor {
      */
     public void comprarProducto(Moneda mon1, int numeroProducto)
             throws PagoIncorrectoException, PagoInsuficienteException, NoHayProductoException {
+
+        /* Verificar que la moneda y el producto no sean nulos */
+        if (mon1 == null) {
+            throw new PagoIncorrectoException("No se ingreso moneda");
+        }
 
         /* Convierte el numero al enum del producto deseado*/
         OpcProducto producto = null;
@@ -79,12 +89,9 @@ public class Expendedor {
             producto = OpcProducto.SNICKERS;
         }
 
-        /* Verificar que la moneda y el producto no sean nulos */
-        if (mon1 == null) {
-            throw new PagoIncorrectoException("No se ingreso moneda");
-        }
-
+        // Verificar que el producto sea valido
         if (producto == null) {
+            monVu.add(mon1);
             throw new NoHayProductoException("Selección de producto inválida");
         }
 
@@ -93,6 +100,27 @@ public class Expendedor {
             monVu.add(mon1);
             throw new PagoInsuficienteException("Dinero insuficiente para comprar el producto");
         }
+
+        Producto productoAComprar = obtenerDelDeposito(producto);
+        if (productoAComprar == null) {
+            monVu.add(mon1);
+            throw new NoHayProductoException("No hay stock del producto");
+        }
+
+        monRec.add(mon1);
+        productoComprado.depositar(productoAComprar);
+
+
+
+
+        /* Calculo de vuelto */
+        int vuelto = mon1.getValor() - producto.getPrecio();
+        vuelto = depositarVuelto(vuelto);
+
+
+    }
+
+    public Producto obtenerDelDeposito(OpcProducto producto){
 
         /* Otorga el producto deseado */
         Producto productoAComprar = null;
@@ -111,20 +139,27 @@ public class Expendedor {
         if (producto == OpcProducto.SNICKERS) {
             productoAComprar = snickers.get();
         }
-        if (productoAComprar == null) {
-            monVu.add(mon1);
-            throw new NoHayProductoException("No hay stock del producto");
-        }
+        return productoAComprar;
+    }
 
-        /* Calculo de vuelto */
-        int vuelto = mon1.getValor() - producto.getPrecio();
-        while (vuelto >= 100){
+    private int depositarVuelto(int vuelto){
+        while (vuelto >= 1000) {
+            monVu.add(new Moneda1000());
+            vuelto -= 1000;
+        }
+        while (vuelto >= 500) {
+            monVu.add(new Moneda500());
+            vuelto -= 500;
+        }
+        while (vuelto >= 100) {
             monVu.add(new Moneda100());
-            vuelto-=100;
+            vuelto -= 100;
         }
+        return vuelto;
+    }
 
-        //return productoAComprar;
-
+    public Producto getProducto(){
+        return productoComprado.retirar();
     }
 
     /**
