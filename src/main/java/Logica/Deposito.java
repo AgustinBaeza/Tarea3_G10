@@ -1,6 +1,7 @@
 package Logica;
 
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
@@ -37,6 +38,22 @@ public class Deposito<T>{
         } else {
             return null;
         }
+    }
+
+    /**
+     * Getter del deposito entero
+     * @return deposito completo con los elementos como ArrayList
+     */
+    public ArrayList<T> getDeposito(){
+        return almac;
+    }
+
+    /**
+     * Metodo para mostrar el stock de productos en el deposito
+     * @return cantidad de productos en el deposito
+     */
+    public int depositoSize(){
+        return almac.size();
     }
 
 }

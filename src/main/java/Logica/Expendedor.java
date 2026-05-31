@@ -20,7 +20,7 @@ public class Expendedor {
     private Deposito<Dulce> snickers;
     private Deposito<Moneda> monVu;
     private Deposito<Moneda> monRec;
-    private DepositoProducto productoComprado;
+    private DepositoRetiro productoComprado;
     private static int contadorSerie = 0;
 
     /**
@@ -37,7 +37,7 @@ public class Expendedor {
         this.snickers = new Deposito<Dulce>();
         this.monVu = new Deposito<Moneda>();
         this.monRec = new Deposito<Moneda>();
-        this.productoComprado = new DepositoProducto();
+        this.productoComprado = new DepositoRetiro();
 
         rellenarDepositos(cantidad);
     }
@@ -169,4 +169,38 @@ public class Expendedor {
     public Moneda getVuelto(){
         return monVu.get();
     }
+
+    public Deposito<Bebida> getCoca(){
+        return coca;
+    }
+
+    public Deposito<Bebida> getSprite(){
+        return sprite;
+    }
+
+    public Deposito<Bebida> getFanta(){
+        return fanta;
+    }
+
+    public Deposito<Dulce> getSuper8(){
+        return super8;
+    }
+
+    public Deposito<Dulce> getSnickers(){
+        return snickers;
+    }
+
+    public Deposito<Moneda> getMonVu(){
+        return monVu;
+    }
+
+    public Deposito<Moneda> getMonRec(){
+        return monRec;
+    }
+
+    // getter aparte por si acaso, retirar de no ser necesario
+    public DepositoRetiro getProductoComprado(){
+        return productoComprado;
+    }
+
 }
