@@ -9,54 +9,137 @@ import Logica.producto.*;
  * Recibe una Moneda, un producto a querer comprar, y el Expendedor en que se compra.
  */
 public class Comprador {
-    private String sabor = null;
-    private int vuelto;
+    private Deposito<Moneda> billetera;
+    private Producto productoRecibido;
+    private Deposito<Moneda> vueltoRec;
+    private String Mensaje;
     private Expendedor exp;
 
+
     /**
-     * Constructor de Comprador, recibe Moneda, un producto y un Expendedor.
-     * Realiza los calculos del sabor si es valido y calcula el vuelto sacando
-     * las monedas del Expendedor.
-     * @param m la moneda utilizada para comprar
-     * @param numeroProducto numero del producto que se desea comprar
-     * @param exp el expendedor en que se desea comprar
+     * Constructor del Comprador
+     * Inicializa la billetera con monedas suficientes para compras
+     *
+     * @param exp expendedor que interactua con el comprador
      */
-    public Comprador(Moneda m, int numeroProducto, Expendedor exp) {
+    public Comprador(Expendedor exp){
         this.exp = exp;
+        this.billetera = new Deposito<Moneda>();
+        this.vueltoRec = new Deposito<Moneda>();
+        this.productoRecibido = null;
+        this.Mensaje = "Selecciona una moneda y un producto.";
 
-        /* compra el producto y calcula el vuelto*/
-        Producto prod1 = null;
-        Moneda mon;
+        //añadir monedas
+        billetera.add(new Moneda1000());
+        billetera.add(new Moneda1000());
+        billetera.add(new Moneda1000());
+        billetera.add(new Moneda1000());
+        billetera.add(new Moneda1000());
+        billetera.add(new Moneda500());
+        billetera.add(new Moneda500());
+        billetera.add(new Moneda100());
+        billetera.add(new Moneda100());
+        billetera.add(new Moneda100());
 
-        try {
-            exp.comprarProducto(m, numeroProducto);
+    }
 
-            if (prod1 != null) {
-                sabor = prod1.consumir();
+    /**
+     * Intenta realizar compras usando una moneda y el tag del producto deseado
+     * Si es exitosa, recoge el producto y el vuelto del expendedor
+     *
+     * @param valorMoneda valor de la moneda a usar
+     * @param tagProducto tag del producto usando OpcProducto
+     */
+    public void comprar(int valorMoneda, int tagProducto){
+
+        Moneda monedaAUsar = null;
+
+        for(Moneda m : billetera.getDeposito()){
+            if(m.getValor() == valorMoneda){
+                monedaAUsar = m;
+                break;
             }
-
-        } catch (Exception e) {
-            sabor = e.getMessage(); // guardas el error como resultado
         }
 
-        while ((mon = exp.getVuelto()) != null) {
-            vuelto += mon.getValor();
+        if( monedaAUsar == null){
+            Mensaje = "No tienes monedas de" + valorMoneda + "$ en tu billetera";
+            return;
+        }
+
+        //sacar moneda antes de usar
+        billetera.remove(monedaAUsar);
+
+        try{
+
+            exp.comprarProducto(monedaAUsar, tagProducto);
+
+            productoRecibido = exp.getProducto();
+            Mensaje = "Compraste "+ productoRecibido.consumir() +", Serie: " + productoRecibido.getNumSerie();
+
+            Moneda vuelto;
+            while ((vuelto = exp.getVuelto()) != null){
+                vueltoRec.add(vuelto);
+                billetera.add(vuelto);
+            }
+        }
+        catch (PagoIncorrectoException | PagoInsuficienteException | NoHayProductoException e){
+
+            Mensaje = e.getMessage();
+
+            //Recuperar moneda
+            Moneda devuelta = exp.getVuelto();
+            if (devuelta != null) {
+                billetera.add(devuelta);
+            }
         }
     }
 
     /**
-     * Getter del sabor.
-     * @return el sabor en String
+     * Retorna el producto de la compra y lo limpia
+     *
+     * @return producto recibido o ninguno si no hay
      */
-    public String queConsumiste() {
-        return sabor;
+    public Producto getProductoRecibido() {
+        Producto productoReturn = productoRecibido;
+        productoRecibido = null;
+        return productoReturn;
     }
 
     /**
-     * Getter del vuelto.
-     * @return el vuelto en int
+     * Retorna el ultimo mensaje recibido
+     * @return mensaje en forma de String
      */
-    public int cuantoVuelto(){
-        return vuelto;
+    public String getMensaje() {
+        return Mensaje;
+    }
+
+    /**
+     * Retorna el deposito en que estan las monedas
+     * @return deposito de monedas
+     */
+    public Deposito<Moneda> getBilletera() {
+        return billetera;
+    }
+
+    /**
+     * Retorna el valor total de las monedas en la billetera
+     * @return suma de todas las monedas
+     */
+    public int getTotalBilletera(){
+        int total = 0;
+
+        for(Moneda m : billetera.getDeposito()){
+            total += m.getValor();
+        }
+
+        return total;
+    }
+
+    /**
+     * Retorna el deposito en que esta el vuelto
+     * @return deposito de monedas
+     */
+    public Deposito<Moneda> getVueltoRec() {
+        return vueltoRec;
     }
 }
