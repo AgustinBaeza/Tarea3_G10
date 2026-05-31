@@ -1,7 +1,7 @@
 package Logica.producto;
 
 import Logica.OpcProducto;
-
+import java.awt.Graphics;
 /**
  * Clase abstracta que se utiliza polimorficamente para representar un producto dentro del expendedor
  * Establece los atributos basicos de cada bebida y dulce
@@ -9,10 +9,11 @@ import Logica.OpcProducto;
 
 public abstract class Producto {
 
-    /** Numero de serie del producto*/
     private int numSerie;
-    /** Tipo de producto*/
     private OpcProducto producto;
+
+    protected int x; // se declaran protected para que clases hijas puedan utilizarlas
+    protected int y;
 
     /**
      * Constructor de la clase Producto
@@ -23,6 +24,32 @@ public abstract class Producto {
     public Producto(int numSerie, OpcProducto producto){
         this.numSerie = numSerie;
         this.producto = producto;
+    }
+
+    /**
+     * Setter de las coordenadas (x,y) del producto para mostrar mediante Vista
+     * @param x coordenada x del producto
+     * @param y coordenada y del producto
+     */
+    public void setXY(int x, int y){
+        this.x = x;
+        this.y = y;
+    }
+
+    /**
+     * Getter de la coordenada x del producto
+     * @return coordenada x del producto como int
+     */
+    public int getX(){
+        return x;
+    }
+
+    /**
+     * Getter de la coordenada y del producto
+     * @return coordenada y del producto como int
+     */
+    public int getY(){
+        return y;
     }
 
     /**

@@ -5,11 +5,38 @@ package Logica.moneda;
  */
 public abstract class Moneda implements Comparable<Moneda>{
 
-    /** Numero de serie unico para cada Moneda */
-    private int serie;
 
-    /** Contador global para aumentar gradualmente el número de serie de la Moneda */
+    private int serie;
     private static int contador;
+
+    protected int x; // se declaran protected para que clases hijas puedan utilizarlas
+    protected int y;
+
+    /**
+     * Setter de las coordenadas (x,y) de la moneda para mostrar mediante Vista
+     * @param x coordenada x de la moneda
+     * @param y coordenada y de la moneda
+     */
+    public void setXY(int x, int y){
+        this.x = x;
+        this.y = y;
+    }
+
+    /**
+     * Getter de la coordenada x de la moneda
+     * @return coordenada x de la moneda como int
+     */
+    public int getX(){
+        return x;
+    }
+
+    /**
+     * Getter de la coordenada y de la moneda
+     * @return coordenada y de la moneda como int
+     */
+    public int getY(){
+        return y;
+    }
 
     /**
      * Constructor de la clase Moneda
