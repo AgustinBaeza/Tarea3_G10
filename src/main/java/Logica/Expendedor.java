@@ -9,18 +9,24 @@ import Logica.producto.*;
  * Clase que permite llenar el expendedor de productos, comprarlos y calcular el vuelto.
  */
 public class Expendedor {
-    /**
-     * Declara distintos depositos para los productos
-     * y para el deposito del vuelto.
-     */
+
+     /** Deposito de CocaCola */
     private Deposito<Bebida> coca;
+    /** Deposito de Sprite */
     private Deposito<Bebida> sprite;
+    /** Deposito de Fanta */
     private Deposito<Bebida> fanta;
+    /** Deposito de Super8 */
     private Deposito<Dulce> super8;
+    /** Deposito de Snickers */
     private Deposito<Dulce> snickers;
+    /** Deposito de monedas de vuelto */
     private Deposito<Moneda> monVu;
+    /** Deposito de monedas recaudadas */
     private Deposito<Moneda> monRec;
+    /** Deposito del producto comprado */
     private DepositoRetiro productoComprado;
+    /** Contador de numeros de serie */
     private static int contadorSerie = 0;
 
     /**
@@ -42,6 +48,10 @@ public class Expendedor {
         rellenarDepositos(cantidad);
     }
 
+    /**
+     * Rellena todos los depositos de productos con la cantidad ingresada
+     * @param cantidad numero de productos deseados en cada deposito
+     */
     public void rellenarDepositos(int cantidad){
         for (int i = 0; i < cantidad; i++) {
             coca.add(new CocaCola(contadorSerie++));
@@ -58,7 +68,6 @@ public class Expendedor {
      * Tambien calcula el vuelto si corresponde.
      * @param mon1 moneda con la que se compra el producto
      * @param numeroProducto numero del producto que se desee comprar
-     * @return el producto comprado
      * @throws PagoIncorrectoException si la moneda es nula
      * @throws PagoInsuficienteException si el dinero es insuficiente
      * @throws NoHayProductoException si el producto no existe o no hay stock
@@ -110,9 +119,6 @@ public class Expendedor {
         monRec.add(mon1);
         productoComprado.depositar(productoAComprar);
 
-
-
-
         /* Calculo de vuelto */
         int vuelto = mon1.getValor() - producto.getPrecio();
         vuelto = depositarVuelto(vuelto);
@@ -120,6 +126,11 @@ public class Expendedor {
 
     }
 
+    /**
+     * Busca el producto deseado en los depositos
+     * @param producto producto deseado
+     * @return producto deseado o null de no ser encontrado
+     */
     public Producto obtenerDelDeposito(OpcProducto producto){
 
         /* Otorga el producto deseado */
@@ -142,6 +153,11 @@ public class Expendedor {
         return productoAComprar;
     }
 
+    /**
+     * Deposita el vuelto en la moneda mas grande que se pueda hasta llegar a 0
+     * @param vuelto cantidad de vuelto
+     * @return cantidad de vuelto restante
+     */
     private int depositarVuelto(int vuelto){
         while (vuelto >= 1000) {
             monVu.add(new Moneda1000());
@@ -158,6 +174,10 @@ public class Expendedor {
         return vuelto;
     }
 
+    /**
+     * Getter del producto
+     * @return el producto comprado
+     */
     public Producto getProducto(){
         return productoComprado.retirar();
     }
@@ -170,35 +190,66 @@ public class Expendedor {
         return monVu.get();
     }
 
+    /**
+     * Getter del deposito de CocaCola
+     * @return Deposito de coca
+     */
     public Deposito<Bebida> getCoca(){
         return coca;
     }
 
+    /**
+     * Getter del deposito de Sprite
+     * @return Deposito de sprite
+     */
     public Deposito<Bebida> getSprite(){
         return sprite;
     }
 
+    /**
+     * Getter del deposito de Fanta
+     * @return Deposito de fanta
+     */
     public Deposito<Bebida> getFanta(){
         return fanta;
     }
 
+    /**
+     * Getter del deposito de Super8
+     * @return Deposito de super8
+     */
     public Deposito<Dulce> getSuper8(){
         return super8;
     }
 
+    /**
+     * Getter del deposito de Snickers
+     * @return Deposito de snickers
+     */
     public Deposito<Dulce> getSnickers(){
         return snickers;
     }
 
+    /**
+     * Getter del deposito de monedas de vuelto
+     * @return Deposito de monedas de vuelto
+     */
     public Deposito<Moneda> getMonVu(){
         return monVu;
     }
 
+    /**
+     * Getter del deposito de monedas de recaudadas por el expendedor
+     * @return Deposito de monedas en el expendedor
+     */
     public Deposito<Moneda> getMonRec(){
         return monRec;
     }
 
-    // getter aparte por si acaso, retirar de no ser necesario
+    /**
+     * Getter del deposito con el producto
+     * @return Deposito del producto
+     */
     public DepositoRetiro getProductoComprado(){
         return productoComprado;
     }

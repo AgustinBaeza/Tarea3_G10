@@ -1,5 +1,8 @@
 package GUI;
 
+import Logica.Deposito;
+import Logica.producto.Bebida;
+
 import javax.swing.*;
 
 public class Ventana extends JFrame {
@@ -8,6 +11,7 @@ public class Ventana extends JFrame {
         setTitle("Prueba");
         setSize(400,300);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
 
         add(new PanelPrincipal());
 

@@ -12,13 +12,13 @@ public class Comprador {
     private Deposito<Moneda> billetera;
     private Producto productoRecibido;
     private Deposito<Moneda> vueltoRec;
-    private String Mensaje;
+    private String mensaje;
     private Expendedor exp;
 
 
     /**
      * Constructor del Comprador
-     * Inicializa la billetera con monedas suficientes para compras
+     * Inicializa la billetera con monedas de 5*$1000 + 2*$500 + 3*$100, total $6400
      *
      * @param exp expendedor que interactua con el comprador
      */
@@ -27,7 +27,7 @@ public class Comprador {
         this.billetera = new Deposito<Moneda>();
         this.vueltoRec = new Deposito<Moneda>();
         this.productoRecibido = null;
-        this.Mensaje = "Selecciona una moneda y un producto.";
+        this.mensaje = "Selecciona una moneda y un producto.";
 
         //añadir monedas
         billetera.add(new Moneda1000());
@@ -62,7 +62,7 @@ public class Comprador {
         }
 
         if( monedaAUsar == null){
-            Mensaje = "No tienes monedas de" + valorMoneda + "$ en tu billetera";
+            mensaje = "No tienes monedas de" + valorMoneda + "$ en tu billetera";
             return;
         }
 
@@ -74,7 +74,7 @@ public class Comprador {
             exp.comprarProducto(monedaAUsar, tagProducto);
 
             productoRecibido = exp.getProducto();
-            Mensaje = "Compraste "+ productoRecibido.consumir() +", Serie: " + productoRecibido.getNumSerie();
+            mensaje = "Compraste "+ productoRecibido.consumir() +", Serie: " + productoRecibido.getNumSerie();
 
             Moneda vuelto;
             while ((vuelto = exp.getVuelto()) != null){
@@ -84,7 +84,7 @@ public class Comprador {
         }
         catch (PagoIncorrectoException | PagoInsuficienteException | NoHayProductoException e){
 
-            Mensaje = e.getMessage();
+            mensaje = e.getMessage();
 
             //Recuperar moneda
             Moneda devuelta = exp.getVuelto();
@@ -110,7 +110,7 @@ public class Comprador {
      * @return mensaje en forma de String
      */
     public String getMensaje() {
-        return Mensaje;
+        return mensaje;
     }
 
     /**

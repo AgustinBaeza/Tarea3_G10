@@ -2,17 +2,22 @@ package GUI;
 
 import javax.swing.*;
 import java.awt.*;
+import Logica.*;
+import Logica.producto.*;
 
 public class PanelPrincipal extends JPanel {
 
+    private PanelDeposito<Bebida> panelDeposito;
+
     public PanelPrincipal() {
-        setLayout(new FlowLayout());
-
-        JLabel etiqueta = new JLabel("aña");
-        JButton boton = new JButton("Aceptar");
-
-        add(etiqueta);
-        add(boton);
+        Deposito<Bebida> dep = new Deposito<>();
+        panelDeposito = new PanelDeposito<>(50,50,300,100,dep);
     }
 
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+
+        panelDeposito.paintComponent(g);
+    }
 }
