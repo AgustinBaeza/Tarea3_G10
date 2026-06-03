@@ -29,6 +29,14 @@ public class Deposito<T>{
     }
 
     /**
+     * Metodo para quitar un elemento del deposito
+     * @param elemento elemento a quitar
+     */
+    public void remove(T elemento){
+        almac.remove(elemento);
+    }
+
+    /**
      * Metodo para extraer el primer elemento que se encuentre en el depósito
      * @return elemento retirado o null si el deposito esta vacio
      */

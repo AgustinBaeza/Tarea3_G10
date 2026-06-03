@@ -42,55 +42,13 @@ public class Expendedor {
         rellenarDepositos(cantidad);
     }
 
-    public void rellenarDepositos(int cantidad) {
+    public void rellenarDepositos(int cantidad){
         for (int i = 0; i < cantidad; i++) {
-
-            // cada depósito de productos se limita a un máximo de 10 productos simultaneos
-            if (coca.depositoSize() < 10) {
-                coca.add(new CocaCola(contadorSerie++));
-            }
-            if (sprite.depositoSize() < 10) {
-                sprite.add(new Sprite(contadorSerie++));
-            }
-            if (fanta.depositoSize() < 10) {
-                fanta.add(new Fanta(contadorSerie++));
-            }
-            if (super8.depositoSize() < 10) {
-                super8.add(new Super8(contadorSerie++));
-            }
-            if (snickers.depositoSize() < 10) {
-                snickers.add(new Snickers(contadorSerie++));
-            }
-        }
-    }
-
-    public void rellenarDepositosVacios() {
-
-        // si algun deposito esta vacio, se rellena en la llamada del metodo
-        if (coca.depositoSize() == 0) {
-            for (int i = 0; i < 10; i++) coca.add(new CocaCola(contadorSerie++));
-        }
-        if (sprite.depositoSize() == 0) {
-            for (int i = 0; i < 10; i++) sprite.add(new Sprite(contadorSerie++));
-        }
-        if (fanta.depositoSize() == 0) {
-            for (int i = 0; i < 10; i++) fanta.add(new Fanta(contadorSerie++));
-        }
-        if (super8.depositoSize() == 0) {
-            for (int i = 0; i < 10; i++) super8.add(new Super8(contadorSerie++));
-        }
-        if (snickers.depositoSize() == 0) {
-            for (int i = 0; i < 10; i++) snickers.add(new Snickers(contadorSerie++));
-        }
-    }
-
-    public void rellenarVuelto(int cantidad) {
-        for (int i = 0; i < cantidad; i++) {
-
-            // el deposito de monedas de vuelto se limita a un tope de 10 simultaneas
-            if (monVu.depositoSize() < 10) {
-                monVu.add(new Moneda100());
-            }
+            coca.add(new CocaCola(contadorSerie++));
+            sprite.add(new Sprite(contadorSerie++));
+            fanta.add(new Fanta(contadorSerie++));
+            super8.add(new Super8(contadorSerie++));
+            snickers.add(new Snickers(contadorSerie++));
         }
     }
 
@@ -149,10 +107,7 @@ public class Expendedor {
             throw new NoHayProductoException("No hay stock del producto");
         }
 
-        // limite de 12 monedas recaudadas en el deposito
-        if (monRec.depositoSize() < 12) {
-            monRec.add(mon1);
-        }
+        monRec.add(mon1);
         productoComprado.depositar(productoAComprar);
 
 
@@ -243,8 +198,8 @@ public class Expendedor {
         return monRec;
     }
 
-    // getter usado unicamente para ver el producto en el deposito de retiro
-    public DepositoRetiro verProductoComprado(){
+    // getter aparte por si acaso, retirar de no ser necesario
+    public DepositoRetiro getProductoComprado(){
         return productoComprado;
     }
 
