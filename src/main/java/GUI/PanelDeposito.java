@@ -105,17 +105,6 @@ public class PanelDeposito<T> {
         g.drawString("x" + deposito.depositoSize(), x + ancho - 28, y + 15);
     }
 
-    // metodo para dibujar cada producto bebida o dulce individualmente
-    private void dibujarProducto(Graphics g, Producto prod, int prodX, int prodY, int prodAncho, int prodAlto){
-        Image img = obtenerImagenProducto(prod.getProducto());
-        g.drawImage(img, prodX, prodY, null);
-
-        // numero de serie debajo de cada producto
-        g.setColor(Color.BLACK);
-        g.setFont(new Font("Arial", Font.BOLD, 10));
-        g.drawString("#" + prod.getNumSerie(), prodX + 2, prodY + prodAlto - 2);
-    }
-
     // segun la opcion del producto, retornara la imagen correspondiente
     private Image obtenerImagenProducto(OpcProducto tipo) {
         switch (tipo) {
@@ -132,6 +121,17 @@ public class PanelDeposito<T> {
             default:
                 return null;
         }
+    }
+
+    // metodo para dibujar cada producto bebida o dulce individualmente
+    private void dibujarProducto(Graphics g, Producto prod, int prodX, int prodY, int prodAncho, int prodAlto){
+        Image img = obtenerImagenProducto(prod.getProducto());
+        g.drawImage(img, prodX, prodY, null);
+
+        // numero de serie debajo de cada producto
+        g.setColor(Color.BLACK);
+        g.setFont(new Font("Arial", Font.BOLD, 10));
+        g.drawString("#" + prod.getNumSerie(), prodX + 2, prodY + prodAlto - 2);
     }
 
     // metodo para dibujar moneda individualmente

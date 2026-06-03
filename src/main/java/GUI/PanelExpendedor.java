@@ -146,7 +146,7 @@ public class PanelExpendedor {
         g.drawRect(retiroX, retiroY, retiroAncho, retiroAlto);
 
         // dibujo del producto en deposito de retiro, si es que hay
-        DepositoRetiro depositoRetiro = expendedor.verProductoComprado();
+        DepositoRetiro depositoRetiro = expendedor.getProductoComprado();
         if (depositoRetiro.tieneProducto()) {
             Producto prod = depositoRetiro.verDepositoRetiro();
             Image imgProd = obtenerImagenProducto(prod.getProducto());
