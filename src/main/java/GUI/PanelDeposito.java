@@ -35,7 +35,7 @@ public class PanelDeposito<T> {
         if (urlImagen != null) {
             ImageIcon icono = new ImageIcon(urlImagen);
             Image imgEscalada = icono.getImage().getScaledInstance(sizes.getAncho(), sizes.getAlto(), Image.SCALE_SMOOTH);
-            return imgEscalada;
+            return new ImageIcon(imgEscalada).getImage(); // solucion de que las imagenes no cargaban por completo al iniciar programa
         }
         return null;
     }
@@ -65,14 +65,14 @@ public class PanelDeposito<T> {
         // lista auxiliar de elementos del deposito para no alterar lista original
         ArrayList<T> elementos = deposito.getDeposito();
 
-        // bucle que recorre horizontalmente para hacer dibujo de cada
+        // bucle que recorre horizontalmente para hacer dibujo de cada objeto
         for (int i = 0; i < elementos.size(); i++) {
             T objeto = elementos.get(i);
 
             int objetoX, objetoY;
             int objetoAncho, objetoAlto;
 
-            // dimensiones del objeto a renderizar como imagen
+            // dimensiones del objeto a renderizar como imagen segun corresponda
             if (objeto instanceof Producto) {
                 objetoAncho = SizeImagen.PRODUCTO.getAncho();
                 objetoAlto = SizeImagen.PRODUCTO.getAlto();
@@ -81,13 +81,13 @@ public class PanelDeposito<T> {
                 objetoAlto = SizeImagen.MONEDA.getAlto();
             }
 
-            // posicion horizontal del objeto con un espaciado de 7 pixeles entre cada uno REVISAR, antes era objancho+8
+            // posicion horizontal del objeto con un espaciado de 7 pixeles
             objetoX = x + 10 + i * (objetoAncho + 7);
 
             // posicion vertical del objeto centrado en cada rectangulo de deposito
             objetoY = y + (alto / 2) - (objetoAlto / 2);
 
-            // actualizacion de coordenadas y renderizacion del objeto
+            // actualizacion de coordenadas (x,y) y renderizacion del objeto
             if (objeto instanceof Producto) {
                 Producto prod = (Producto) objeto;
                 prod.setXY(objetoX, objetoY);
@@ -98,6 +98,11 @@ public class PanelDeposito<T> {
                 dibujarMoneda(g, mon, objetoX, objetoY, objetoAncho, objetoAlto);
             }
         }
+
+        // stock en esquina superior derecha
+        g.setColor(Color.BLACK);
+        g.setFont(new Font("Arial", Font.BOLD, 12));
+        g.drawString("x" + deposito.depositoSize(), x + ancho - 28, y + 15);
     }
 
     // metodo para dibujar cada producto bebida o dulce individualmente
@@ -133,6 +138,11 @@ public class PanelDeposito<T> {
     private void dibujarMoneda(Graphics g, Moneda mon, int monX, int monY, int monAncho, int monAlto) {
         Image img = obtenerImagenMoneda(mon.getValor());
         g.drawImage(img, monX, monY, null);
+
+        // numero de serie debajo de cada moneda
+        g.setColor(Color.BLACK);
+        g.setFont(new Font("Arial", Font.BOLD, 10));
+        g.drawString("#" + mon.getSerie(), monX + 2, monY + monAlto - 2);
     }
 
     // retorna segun el valor de la moneda
