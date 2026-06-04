@@ -81,11 +81,17 @@ public class PanelDeposito<T> {
                 objetoAlto = SizeImagen.MONEDA.getAlto();
             }
 
-            // posicion horizontal del objeto con un espaciado de 7 pixeles
-            objetoX = x + 10 + i * (objetoAncho + 7);
+            int espacio = 7;
+            int inicioX = x + 10;
+            int inicioY = y + 3;
 
-            // posicion vertical del objeto centrado en cada rectangulo de deposito
-            objetoY = y + (alto / 2) - (objetoAlto / 2);
+            int maxPorFila = Math.max(1, (ancho - 20) / (objetoAncho + espacio));
+
+            int fila = i / maxPorFila;
+            int columna = i % maxPorFila;
+
+            objetoX = inicioX + columna * (objetoAncho + espacio);
+            objetoY = inicioY + fila * (objetoAlto + 5);
 
             // actualizacion de coordenadas (x,y) y renderizacion del objeto
             if (objeto instanceof Producto) {
