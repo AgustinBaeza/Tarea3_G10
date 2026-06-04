@@ -25,12 +25,13 @@ public class PanelComprador {
 
     /** Margenes clicables */
     //aqui van a ir
-    private static final int ZONA_ANCHO = 0;
-    private static final int ZONA_ALTO = 0;
-    private static final int MARGEN = 0;
+    private static final int ZONA_ANCHO = 90;
+    private static final int ZONA_ALTO = 28;
+    private static final int MARGEN = 15;
 
     /** visibilidad del producto comprado */
     private Producto productoMostar = null;
+    private String mensajePanel = null;
 
     /**
      * Constructor de la clase
@@ -48,10 +49,10 @@ public class PanelComprador {
         this.comprador = comprador;
 
         // deposito billetera
-        panelBilletera =  new PanelDeposito<>( x + MARGEN, y + alto + 110, ancho - 2 * MARGEN, 50, comprador.getBilletera() );
+        panelBilletera =  new PanelDeposito<>( x + MARGEN, y + 390, ancho - 2 * MARGEN, 97, comprador.getBilletera() );
 
         // deposito vuelto recibido
-        panelVuelto = new PanelDeposito<>( x + MARGEN, y + alto + 110, ancho - 2 * MARGEN, 50, comprador.getVueltoRec()  );
+        panelVuelto = new PanelDeposito<>( x + MARGEN, y + 510, ancho - 2 * MARGEN, 55, comprador.getVueltoRec()  );
     }
 
     /**
@@ -72,10 +73,28 @@ public class PanelComprador {
 
         //saldo
         g.setFont(new Font("Arial", Font.BOLD, 11));
-        g.drawString("Saldo: $" + comprador.getTotalBilletera(), x + MARGEN, y + 38);
+        g.drawString("Saldo: $" + comprador.getTotalBilletera(), x + MARGEN, y + 40);
 
-        //zona monedas
-        dibujarEtiqueta( g, "Insertar moneda: ", x +MARGEN, y+ 55);
+        // Etiquetas principales
+        dibujarEtiqueta(g, "Insertar moneda:", x + MARGEN, y + 65);
+        dibujarZonaMoneda(g, "$100", 100, 0);
+        dibujarZonaMoneda(g, "$500", 500, 1);
+        dibujarZonaMoneda(g, "$1000", 1000, 2);
+        dibujarEtiqueta(g, "Elegir producto:", x + MARGEN, y + 135);
+        dibujarZonaProducto(g, "Coca Cola", OpcProducto.COCA_COLA, 0);
+        dibujarZonaProducto(g, "Sprite", OpcProducto.SPRITE, 1);
+        dibujarZonaProducto(g, "Fanta", OpcProducto.FANTA, 2);
+        dibujarZonaProducto(g, "Snickers", OpcProducto.SNICKERS, 3);
+        dibujarZonaProducto(g, "Super8", OpcProducto.SUPER8, 4);
+        dibujarEtiqueta(g, "Billetera:", x + MARGEN, y + 380);
+        dibujarEtiqueta(g, "Vuelto recibido:", x + MARGEN, y + 500);
+
+        /* zona monedas
+        dibujarEtiqueta( g, "Insertar moneda: ", x +MARGEN, y+ 55); */
+
+        // Dibujar depósitos del comprador
+        panelBilletera.paintComponent(g);
+        panelVuelto.paintComponent(g);
 
     }
 
@@ -87,11 +106,39 @@ public class PanelComprador {
     }
 
     public void dibujarZonaMoneda(Graphics g, String texto, int valor, int indice){
+        int zonaX = x + MARGEN + indice * (ZONA_ANCHO + 8);
+        int zonaY = y + 75;
 
+        if (MonedaSel == valor) {
+            g.setColor(Color.YELLOW);
+        }
+        else {
+            g.setColor(Color.LIGHT_GRAY);
+        }
+
+        g.fillRect(zonaX, zonaY, ZONA_ANCHO, ZONA_ALTO);
+        g.setColor(Color.BLACK);
+        g.drawRect(zonaX, zonaY, ZONA_ANCHO, ZONA_ALTO);
+        g.setFont(new Font("Arial", Font.BOLD, 11));
+        g.drawString(texto, zonaX + 22, zonaY + 18);
     }
 
     public void dibujarZonaProducto(Graphics g, String str, OpcProducto opcion, int indice){
+        int zonaX = x + MARGEN;
+        int zonaY = y + 150 + indice * (ZONA_ALTO + 8);
+        int zonaAncho = ancho - 2 * MARGEN;
 
+        if (productoSel == opcion.getTag()) {
+            g.setColor(Color.YELLOW);
+        } else {
+            g.setColor(Color.WHITE);
+        }
+
+        g.fillRect(zonaX, zonaY, zonaAncho, ZONA_ALTO);
+        g.setColor(Color.BLACK);
+        g.drawRect(zonaX, zonaY, zonaAncho, ZONA_ALTO);
+        g.setFont(new Font("Arial", Font.BOLD, 11));
+        g.drawString(str, zonaX + 10, zonaY + 18);
     }
 
     public void dibujarBotonComprar(Graphics g){
@@ -102,9 +149,73 @@ public class PanelComprador {
 
     }
 
-    public boolean procesarClick(){
+    public boolean procesarClick(int mouseX, int mouseY){
+        if (mouseX < x || mouseX > x + ancho || mouseY < y || mouseY > y + alto) {
+            return false;
+        }
+        System.out.println("Click dentro de PanelComprador en X: " + mouseX + " Y: " + mouseY);
+        if (clickEnZonaMoneda(mouseX, mouseY, 0)) {
+            MonedaSel = 100;
+            System.out.println("Moneda seleccionada: $100");
+            return true;
+        }
+
+        if (clickEnZonaMoneda(mouseX, mouseY, 1)) {
+            MonedaSel = 500;
+            System.out.println("Moneda seleccionada: $500");
+            return true;
+        }
+
+        if (clickEnZonaMoneda(mouseX, mouseY, 2)) {
+            MonedaSel = 1000;
+            System.out.println("Moneda seleccionada: $1000");
+            return true;
+        }
+
+        if (clickEnZonaProducto(mouseX, mouseY, 0)) {
+            productoSel = OpcProducto.COCA_COLA.getTag();
+            System.out.println("Producto seleccionado: Coca Cola");
+            return true;
+        }
+
+        if (clickEnZonaProducto(mouseX, mouseY, 1)) {
+            productoSel = OpcProducto.SPRITE.getTag();
+            System.out.println("Producto seleccionado: Sprite");
+            return true;
+        }
+
+        if (clickEnZonaProducto(mouseX, mouseY, 2)) {
+            productoSel = OpcProducto.FANTA.getTag();
+            System.out.println("Producto seleccionado: Fanta");
+            return true;
+        }
+
+        if (clickEnZonaProducto(mouseX, mouseY, 3)) {
+            productoSel = OpcProducto.SNICKERS.getTag();
+            System.out.println("Producto seleccionado: Snickers");
+            return true;
+        }
+
+        if (clickEnZonaProducto(mouseX, mouseY, 4)) {
+            productoSel = OpcProducto.SUPER8.getTag();
+            System.out.println("Producto seleccionado: Super8");
+            return true;
+        }
 
         return true;
+    }
+    private boolean clickEnZonaMoneda(int mouseX, int mouseY, int indice) {
+        int zonaX = x + MARGEN + indice * (ZONA_ANCHO + 8);
+        int zonaY = y + 75;
+        return mouseX >= zonaX && mouseX <= zonaX + ZONA_ANCHO && mouseY >= zonaY && mouseY <= zonaY + ZONA_ALTO;
+    }
+
+    private boolean clickEnZonaProducto(int mouseX, int mouseY, int indice) {
+        int zonaX = x + MARGEN;
+        int zonaY = y + 150 + indice * (ZONA_ALTO + 8);
+        int zonaAncho = ancho - 2 * MARGEN;
+
+        return mouseX >= zonaX && mouseX <= zonaX + zonaAncho && mouseY >= zonaY && mouseY <= zonaY + ZONA_ALTO;
     }
 
     private void ejecutarCompra(){
