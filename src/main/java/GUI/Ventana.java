@@ -9,7 +9,7 @@ public class Ventana extends JFrame {
 
     public Ventana() {
         setTitle("Prueba");
-        setSize(400,300);
+        setSize(2200,700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 
