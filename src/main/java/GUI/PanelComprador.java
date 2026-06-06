@@ -86,6 +86,7 @@ public class PanelComprador {
         dibujarZonaProducto(g, "Fanta", OpcProducto.FANTA, 2);
         dibujarZonaProducto(g, "Snickers", OpcProducto.SNICKERS, 3);
         dibujarZonaProducto(g, "Super8", OpcProducto.SUPER8, 4);
+        dibujarBotonComprar(g);
         dibujarEtiqueta(g, "Billetera:", x + MARGEN, y + 380);
         dibujarEtiqueta(g, "Vuelto recibido:", x + MARGEN, y + 500);
 
@@ -138,10 +139,21 @@ public class PanelComprador {
         g.setColor(Color.BLACK);
         g.drawRect(zonaX, zonaY, zonaAncho, ZONA_ALTO);
         g.setFont(new Font("Arial", Font.BOLD, 11));
-        g.drawString(str, zonaX + 10, zonaY + 18);
+        g.drawString(str + " - $" + opcion.getPrecio(), zonaX + 10, zonaY + 18);
     }
 
     public void dibujarBotonComprar(Graphics g){
+        int botonX = x + MARGEN;
+        int botonY = y + 330;
+        int botonAncho = ancho - 2 * MARGEN;
+        int botonAlto = 30;
+
+        g.setColor(Color.GREEN);
+        g.fillRect(botonX, botonY, botonAncho, botonAlto);
+        g.setColor(Color.BLACK);
+        g.drawRect(botonX, botonY, botonAncho, botonAlto);
+        g.setFont(new Font("Arial", Font.BOLD, 13));
+        g.drawString("COMPRAR", botonX + botonAncho / 2 - 35, botonY + 20);
 
     }
 
@@ -202,6 +214,11 @@ public class PanelComprador {
             return true;
         }
 
+        if (clickEnBotonComprar(mouseX, mouseY)) {
+            ejecutarCompra();
+            return true;
+        }
+
         return true;
     }
     private boolean clickEnZonaMoneda(int mouseX, int mouseY, int indice) {
@@ -218,7 +235,32 @@ public class PanelComprador {
         return mouseX >= zonaX && mouseX <= zonaX + zonaAncho && mouseY >= zonaY && mouseY <= zonaY + ZONA_ALTO;
     }
 
+    private boolean clickEnBotonComprar(int mouseX, int mouseY) {
+
+        int botonX = x + MARGEN;
+        int botonY = y + 330;
+        int botonAncho = ancho - 2 * MARGEN;
+        int botonAlto = 30;
+
+        return mouseX >= botonX && mouseX <= botonX + botonAncho
+                && mouseY >= botonY && mouseY <= botonY + botonAlto;
+    }
+
     private void ejecutarCompra(){
+        if (MonedaSel == -1 || productoSel == -1) {
+            mensajePanel = "Seleccione moenda y producto.";
+            System.out.println(mensajePanel);
+            return;
+        }
+
+        comprador.comprar(MonedaSel, productoSel);
+        productoMostar = comprador.getProductoRecibido();
+        mensajePanel = comprador.getMensaje();
+
+        System.out.println(mensajePanel);
+
+        MonedaSel = -1;
+        productoSel = -1;
 
     }
 
