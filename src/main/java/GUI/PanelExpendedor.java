@@ -22,7 +22,7 @@ public class PanelExpendedor {
     private PanelDeposito<Dulce> panelSnickers;
 
     private PanelDeposito<Moneda> panelRec;
-    private PanelDeposito<Moneda> panelVuelto;
+
 
     private Image imgCoca, imgSprite, imgFanta, imgSuper8, imgSnickers;
 
@@ -45,7 +45,6 @@ public class PanelExpendedor {
         panelSnickers = new PanelDeposito<Dulce> (depositosPosX, y + 355, anchoDepositos, altoDepositos, expendedor.getSnickers());
 
         panelRec = new PanelDeposito<Moneda>(depositosPosX, y + 438, anchoDepositos, altoMonedas, expendedor.getMonRec());
-        panelVuelto = new PanelDeposito<Moneda>(depositosPosX, y + 498, 555, altoMonedas, expendedor.getMonVu());
 
         cargarImagenesRetiro();
     }
@@ -131,10 +130,9 @@ public class PanelExpendedor {
         panelRec.paintComponent(g);
 
         // dibujo de deposito de vuelto
-        panelVuelto.paintComponent(g);
 
         // posicion y medidas deposito retiro
-        int retiroX = x + 580;
+        int retiroX = x + 665;
         int retiroY = y + 498;
         int retiroAncho = 80;
         int retiroAlto  = 70;
@@ -180,17 +178,7 @@ public class PanelExpendedor {
                 return;
             }
 
-            // coordenadas deposito vuelto
-            int vueltoX = x + 20;
-            int vueltoY = y + 498;
-            int vueltoAncho = 555;
-            int vueltoAlto = 55;
 
-            // click en el deposito de vuelto, retira monedas de vuelto mediante el bucle formado en expendedor
-            if (clickX >= vueltoX && clickX <= (vueltoX + vueltoAncho) && clickY >= vueltoY && clickY <= (vueltoY + vueltoAlto)) {
-                expendedor.getVuelto();
-                return;
-            }
 
             // click en el fondo de la maquina expendedora, accion que rellena los depositos
             expendedor.rellenarDepositosVacios();
