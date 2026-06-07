@@ -18,7 +18,7 @@ public class PanelPrincipal extends JPanel {
         expendedor = new Expendedor(10);
         comprador = new Comprador(expendedor);
         panelExpendedor = new PanelExpendedor(20, 20, 760, 580, expendedor);
-        panelComprador = new PanelComprador(820, 20, 330, 580, comprador);
+        panelComprador = new PanelComprador(820, 20, 600, 768, comprador);
 
         setBackground(Color.WHITE);
 

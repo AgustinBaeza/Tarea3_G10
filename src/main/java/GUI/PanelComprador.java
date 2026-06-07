@@ -49,10 +49,10 @@ public class PanelComprador {
         this.comprador = comprador;
 
         // deposito billetera
-        panelBilletera =  new PanelDeposito<>( x + MARGEN, y + 390, ancho - 2 * MARGEN, 97, comprador.getBilletera() );
+        panelBilletera =  new PanelDeposito<>( x + MARGEN, y + 440, ancho - 2 * MARGEN, 158, comprador.getBilletera() );
 
         // deposito vuelto recibido
-        panelVuelto = new PanelDeposito<>( x + MARGEN, y + 510, ancho - 2 * MARGEN, 55, comprador.getVueltoRec()  );
+        panelVuelto = new PanelDeposito<>( x + MARGEN, y + 620, ancho - 2 * MARGEN, 140, comprador.getVueltoRec()  );
     }
 
     /**
@@ -87,11 +87,10 @@ public class PanelComprador {
         dibujarZonaProducto(g, "Snickers", OpcProducto.SNICKERS, 3);
         dibujarZonaProducto(g, "Super8", OpcProducto.SUPER8, 4);
         dibujarBotonComprar(g);
-        dibujarEtiqueta(g, "Billetera:", x + MARGEN, y + 380);
-        dibujarEtiqueta(g, "Vuelto recibido:", x + MARGEN, y + 500);
-
-        /* zona monedas
-        dibujarEtiqueta( g, "Insertar moneda: ", x +MARGEN, y+ 55); */
+        dibujarMensaje(g);
+        dibujarProductoRecibido(g);
+        dibujarEtiqueta(g, "Billetera:", x + MARGEN, y + 430);
+        dibujarEtiqueta(g, "Vuelto recibido:", x + MARGEN, y + 614);
 
         // Dibujar depósitos del comprador
         panelBilletera.paintComponent(g);
@@ -157,14 +156,46 @@ public class PanelComprador {
 
     }
 
+    private void dibujarMensaje(Graphics g) {
+
+        int mensajeX = x + MARGEN;
+        int mensajeY = y + 375;
+        int mensajeAncho = ancho - 2 * MARGEN;
+        int mensajeAlto = 24;
+
+        g.setColor(Color.WHITE);
+        g.fillRect(mensajeX, mensajeY, mensajeAncho, mensajeAlto);
+        g.setColor(Color.BLACK);
+        g.drawRect(mensajeX, mensajeY, mensajeAncho, mensajeAlto);
+        g.setFont(new Font("Arial", Font.BOLD, 10));
+
+        if (mensajePanel != null) {
+            g.drawString(mensajePanel, mensajeX + 8, mensajeY + 15);
+        } else {
+            g.drawString("Seleccione moneda, producto y presione COMPRAR", mensajeX + 8, mensajeY + 15);
+        }
+    }
+
     private void dibujarProductoRecibido(Graphics g){
+        g.setFont(new Font("Arial", Font.BOLD, 10));
+        g.setColor(Color.BLACK);
+
+        if (productoMostar != null) {
+            g.drawString(
+                    "Ultimo producto: " + productoMostar.getProducto() + " #" + productoMostar.getNumSerie(),
+                    x + MARGEN,
+                    y + 415
+            );
+        }
 
     }
 
     public boolean procesarClick(int mouseX, int mouseY){
-        if (mouseX < x || mouseX > x + ancho || mouseY < y || mouseY > y + alto) {
+
+        if (!dentroDelPanel(mouseX, mouseY)) {
             return false;
         }
+
         System.out.println("Click dentro de PanelComprador en X: " + mouseX + " Y: " + mouseY);
         if (clickEnZonaMoneda(mouseX, mouseY, 0)) {
             MonedaSel = 100;
