@@ -9,6 +9,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class PanelDeposito<T> {
 
@@ -64,6 +65,12 @@ public class PanelDeposito<T> {
 
         // lista auxiliar de elementos del deposito para no alterar lista original
         ArrayList<T> elementos = deposito.getDeposito();
+
+        // ordenar monedas
+        if (!elementos.isEmpty() && elementos.get(0) instanceof Moneda) {
+            ArrayList<Moneda> monedas = (ArrayList<Moneda>) elementos;
+            Collections.sort(monedas, Collections.reverseOrder());
+        }
 
         // bucle que recorre horizontalmente para hacer dibujo de cada objeto
         for (int i = 0; i < elementos.size(); i++) {

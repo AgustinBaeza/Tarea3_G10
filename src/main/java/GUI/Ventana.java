@@ -1,8 +1,5 @@
 package GUI;
 
-import Logica.Deposito;
-import Logica.producto.Bebida;
-
 import javax.swing.*;
 
 public class Ventana extends JFrame {
