@@ -10,6 +10,13 @@ import javax.swing.*;
 import java.awt.*;
 import java.net.URL;
 
+
+/**
+ * Panel que representa al expendedor
+ * Esta clase se encarga de dibujar visualmente la maquina expendedora,
+ * sus depositos de productos, monedas recaudadas y la zona de retiro
+ * Tambien procesa los clicks realizados dentro del expendedor
+ */
 public class PanelExpendedor {
 
     private int x, y, ancho, alto;
@@ -20,12 +27,22 @@ public class PanelExpendedor {
     private PanelDeposito<Bebida> panelFanta;
     private PanelDeposito<Dulce> panelSuper8;
     private PanelDeposito<Dulce> panelSnickers;
-
     private PanelDeposito<Moneda> panelRec;
-
-
+    private Producto ultimoProductoComprado;
     private Image imgCoca, imgSprite, imgFanta, imgSuper8, imgSnickers;
 
+    /**
+     * Constructor del panel expendedor
+     * Inicia la posicion, dimensiones y el expendedor
+     * Tambien crea los paneles graficos que representan los depositos
+     * internos de productos y monedas
+     *
+     * @param x coordenada horizontal del panel
+     * @param y coordenada vertical del panel
+     * @param ancho ancho del panel
+     * @param alto alto del panel
+     * @param expendedor expendedor de la interfaz grafica
+     */
     public PanelExpendedor(int x, int y, int ancho, int alto, Expendedor expendedor) {
         this.x = x;
         this.y = y;
@@ -36,7 +53,7 @@ public class PanelExpendedor {
         int depositosPosX = x + 20;
         int anchoDepositos = 640;
         int altoDepositos = 75;
-        int altoMonedas = 55;
+        int altoMonedas = 100;
 
         panelCoca = new PanelDeposito<Bebida>(depositosPosX, y + 35,  anchoDepositos, altoDepositos, expendedor.getCoca());
         panelSprite = new PanelDeposito<Bebida>(depositosPosX,y + 115, anchoDepositos, altoDepositos, expendedor.getSprite());
@@ -68,6 +85,14 @@ public class PanelExpendedor {
         imgSnickers = cargar("/imagenes/snickers.png", SizeImagen.PRODUCTO);
     }
 
+    /**
+     * Obtiene la imagen del producto indicado
+     * Segun el valor de OpcProducto recibido, retorna la imagen para mostrarla dentro del
+     * panel grafico del expendedor
+     *
+     * @param tipo tipo de producto seleccionado segun OpcProducto
+     * @return imagen del producto, o null si no existe una imagen asociada
+     */
     private Image obtenerImagenProducto(OpcProducto tipo) {
 
         // retorna la imagen correspondiente segun el tipo escogido
@@ -87,6 +112,13 @@ public class PanelExpendedor {
         }
     }
 
+    /**
+     * Dibuja todos los elementos visuales del expendedor
+     * Incluye el fondo de la maquina, los depositos, las monedas recaudadas,
+     * la zona de retiro y el producto mostrado cuando corresponde
+     *
+     * @param g contexto grafico utilizado para dibujar el panel
+     */
     public void paintComponent(Graphics g) {
 
         // dibujo de fondo gris oscuro del expendedor
@@ -143,6 +175,18 @@ public class PanelExpendedor {
         g.setColor(Color.BLACK);
         g.drawRect(retiroX, retiroY, retiroAncho, retiroAlto);
 
+        if (ultimoProductoComprado != null) {
+            Image imgProd = obtenerImagenProducto(ultimoProductoComprado.getProducto());
+
+            if (imgProd != null) {
+                g.drawImage(imgProd, retiroX + 15, retiroY + 18, 45, 35, null);
+            }
+
+            g.setColor(Color.WHITE);
+            g.setFont(new Font("Arial", Font.BOLD, 9));
+            g.drawString("#" + ultimoProductoComprado.getNumSerie(), retiroX + 25, retiroY + 62);
+        }
+
         // dibujo del producto en deposito de retiro, si es que hay
         DepositoRetiro depositoRetiro = expendedor.getProductoComprado();
         if (depositoRetiro.tieneProducto()) {
@@ -161,6 +205,11 @@ public class PanelExpendedor {
         }
     }
 
+    /**
+     * Verifica y procesa los clicks realizados dentro del expendedor
+     * @param clickX coordenada horizontal del click
+     * @param clickY coordenada vertical del click
+     */
     public void verificarClick(int clickX, int clickY) {
 
         // si el click ocurre dentro de las coordenadas del expendedor
@@ -189,5 +238,15 @@ public class PanelExpendedor {
     public void setXY(int nuevoX, int nuevoY) {
         this.x = nuevoX;
         this.y = nuevoY;
+    }
+
+    /**
+     * Actualiza el producto que se muestra en la bandeja de retiro del expendedor
+     * Se utiliza para mostrar visualmente el ultimo producto comprado
+     *
+     * @param producto producto que se quiere mostrar en el recuadro de retiro
+     */
+    public void mostrarProductoComprado(Producto producto) {
+        this.ultimoProductoComprado = producto;
     }
 }

@@ -1,5 +1,10 @@
 package GUI;
 
+/**
+ * Clase para guardar las dimensiones de una imagen
+ * Permite guardar el ancho y alto que se usaran para dibujar imagenes
+ * dentro de los paneles graficos del proyecto.
+ */
 public enum SizeImagen {
 
     PRODUCTO(55,65),
@@ -13,9 +18,18 @@ public enum SizeImagen {
         this.alto = alto;
     }
 
+    /**
+     * Obtiene el ancho de la imagen.
+     * @return ancho de la imagen
+     */
     public int getAncho(){
         return ancho;
     }
+
+    /**
+     * Obtiene el alto de la imagen.
+     * @return alto de la imagen
+     */
     public int getAlto(){
         return alto;
     }

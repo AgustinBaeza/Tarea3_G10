@@ -7,6 +7,13 @@ import Logica.producto.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+
+/**
+ * Panel principal de la interfaz grafica
+ * Esta clase logra "unir" el PanelExpendedor y el PanelComprador
+ * Tambien recibe los eventos del mouse y los distribuye a los paneles
+ * para que el usuario pueda interectuar
+ */
 public class PanelPrincipal extends JPanel {
 
     private Expendedor expendedor;
@@ -14,6 +21,11 @@ public class PanelPrincipal extends JPanel {
     private PanelExpendedor panelExpendedor;
     private PanelComprador panelComprador;
 
+    /**
+     * Constructor del panel principal
+     * Crea las instancias del expendedor y del comprador, inicializa sus paneles
+     * graficos y agrega el listener del mouse para procesar los clicks
+     */
     public PanelPrincipal() {
         expendedor = new Expendedor(10);
         comprador = new Comprador(expendedor);
@@ -34,11 +46,21 @@ public class PanelPrincipal extends JPanel {
                 panelExpendedor.verificarClick(mouseX, mouseY);
                 panelComprador.procesarClick(mouseX, mouseY);
 
+                if (panelComprador.getProductoMostrado() != null) {
+                    panelExpendedor.mostrarProductoComprado(panelComprador.getProductoMostrado());
+                }
+
                 repaint();
             }
         });
     }
 
+    /**
+     * Dibuja los componentes principales de la interfaz
+     * Se encarga de actualizar visualmente el expendedor y el comprador
+     * cada vez que el panel se repinta
+     * @param g contexto grafico utilizado para dibujar los paneles
+     */
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);

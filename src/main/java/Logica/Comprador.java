@@ -3,7 +3,7 @@ package Logica;
 import Logica.excepciones.*;
 import Logica.moneda.*;
 import Logica.producto.*;
-
+import java.util.ArrayList;
 /**
  * Clase que se encarga de simular un comprador.
  * Recibe una Moneda, un producto a querer comprar, y el Expendedor en que se compra.
@@ -44,51 +44,94 @@ public class Comprador {
     }
 
     /**
-     * Intenta realizar compras usando una moneda y el tag del producto deseado
-     * Si es exitosa, recoge el producto y el vuelto del expendedor
+     * Intenta realizar una compra usando una sola moneda y el tag del producto
+     * Este metodo mantiene el funcionamiento original de compra con una moneda,
+     * pero por dentro convierte esa moneda en una lista para poder usar la logica de la tarea 1
+     * de compra con una o varias monedas
      *
-     * @param valorMoneda valor de la moneda a usar
-     * @param tagProducto tag del producto usando OpcProducto
+     * @param valorMoneda valor de la moneda que se desea usar
+     * @param tagProducto tag del producto seleccionado segun OpcProducto
      */
     public void comprar(int valorMoneda, int tagProducto){
 
-        Moneda monedaAUsar = null;
+        ArrayList<Integer> valoresMonedas = new ArrayList<>();
+        valoresMonedas.add(valorMoneda);
 
-        for(Moneda m : billetera.getDeposito()){
-            if(m.getValor() == valorMoneda){
-                monedaAUsar = m;
-                break;
-            }
-        }
+        comprar(valoresMonedas, tagProducto);
+    }
 
-        if( monedaAUsar == null){
-            mensaje = "No tienes monedas de" + valorMoneda + "$ en tu billetera";
+    /**
+     * Intenta realizar una compra usando una o varias monedas
+     * El metodo busca en la billetera del comprador las monedas que coincidan con los
+     * valores elegidos, si las encuentra, las saca de la billetera y las pasa
+     * al expendedor para hacer la compra
+     * Si se hace la compra, el comprador recibe el producto y el vuelto entregado
+     * por el expendedor si llega a fallar, como dinero insuficiente, producto agotado
+     * o falta de monedas disponibles, se muestra un mensaje y se devuelven las monedas
+     * a la billetera
+     *
+     * @param valoresMonedas lista con los valores de las monedas seleccionadas
+     * @param tagProducto tag del producto seleccionado segun OpcProducto
+     */
+    public void comprar(ArrayList<Integer> valoresMonedas, int tagProducto){
+
+        productoRecibido = null;
+        if (valoresMonedas == null || valoresMonedas.isEmpty()) {
+            mensaje = "Seleccione una moneda.";
             return;
         }
 
-        //sacar moneda antes de usar
-        billetera.remove(monedaAUsar);
+        ArrayList<Moneda> monedasAUsar = new ArrayList<>();
 
-        try{
+        for (int valor : valoresMonedas) {
 
-            exp.comprarProducto(monedaAUsar, tagProducto);
+            Moneda monedaEncontrada = null;
+
+            for (Moneda m : billetera.getDeposito()) {
+                if (m.getValor() == valor && !monedasAUsar.contains(m)) {
+                    monedaEncontrada = m;
+                    break;
+                }
+            }
+
+            if (monedaEncontrada == null) {
+                mensaje = "No tienes suficientes monedas de $" + valor + " en tu billetera.";
+                return;
+            }
+
+            monedasAUsar.add(monedaEncontrada);
+        }
+
+        // Sacar las monedas de la billetera antes de usarlas
+        for (Moneda moneda : monedasAUsar) {
+            billetera.remove(moneda);
+        }
+
+        try {
+
+            exp.comprarProducto(monedasAUsar, tagProducto);
 
             productoRecibido = exp.getProducto();
-            mensaje = "Compraste "+ productoRecibido.consumir() +", Serie: " + productoRecibido.getNumSerie();
+
+            if (productoRecibido != null) {
+                mensaje = "Compraste " + productoRecibido.consumir() + ", Serie: " + productoRecibido.getNumSerie();
+            } else {
+                mensaje = "Compra realizada.";
+            }
 
             Moneda vuelto;
-            while ((vuelto = exp.getVuelto()) != null){
+            while ((vuelto = exp.getVuelto()) != null) {
                 vueltoRec.add(vuelto);
                 billetera.add(vuelto);
             }
-        }
-        catch (PagoIncorrectoException | PagoInsuficienteException | NoHayProductoException e){
+
+        } catch (PagoIncorrectoException | PagoInsuficienteException | NoHayProductoException e) {
 
             mensaje = e.getMessage();
 
-            //Recuperar moneda
-            Moneda devuelta = exp.getVuelto();
-            if (devuelta != null) {
+            // Recuperar las monedas si la compra falla
+            Moneda devuelta;
+            while ((devuelta = exp.getVuelto()) != null) {
                 billetera.add(devuelta);
             }
         }

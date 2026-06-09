@@ -3,6 +3,7 @@ package Logica;
 import Logica.excepciones.*;
 import Logica.moneda.*;
 import Logica.producto.*;
+import java.util.ArrayList;
 
 /**
  * Clase que permite llenar el expendedor de productos, comprarlos y calcular el vuelto.
@@ -112,67 +113,79 @@ public class Expendedor {
     }
 
     /**
-     * Metodo para comprar productos, recibe una moneda y el numero del producto que se desee comprar,
-     * luego analiza cada caso posible y devuelve lo correspondiente en cada uno.
-     * Tambien calcula el vuelto si corresponde.
-     * @param mon1 moneda con la que se compra el producto
-     * @param numeroProducto numero del producto que se desee comprar
-     * @throws PagoIncorrectoException si la moneda es nula
-     * @throws PagoInsuficienteException si el dinero es insuficiente
+     * Metodo para comprar productos con varias monedas
+     * Suma el valor total de las monedas ingresadas, verifica si alcanza para el producto
+     * y calcula el vuelto
+     *
+     * @param monedas lista de monedas ingresadas por el comprador
+     * @param numeroProducto numero del producto que se desea comprar
+     * @throws PagoIncorrectoException si no se ingresan monedas
+     * @throws PagoInsuficienteException si el dinero total es insuficiente
      * @throws NoHayProductoException si el producto no existe o no hay stock
      */
-    public void comprarProducto(Moneda mon1, int numeroProducto)
+    public void comprarProducto(ArrayList<Moneda> monedas, int numeroProducto)
             throws PagoIncorrectoException, PagoInsuficienteException, NoHayProductoException {
 
-        /* Verificar que la moneda y el producto no sean nulos */
-        if (mon1 == null) {
-            throw new PagoIncorrectoException("No se ingreso moneda");
+        if (monedas == null || monedas.isEmpty()) {
+            throw new PagoIncorrectoException("No se ingresaron monedas");
         }
 
-        /* Convierte el numero al enum del producto deseado*/
+        int totalIngresado = 0;
+
+        for (Moneda moneda : monedas) {
+            totalIngresado += moneda.getValor();
+        }
+
         OpcProducto producto = null;
-        if ( numeroProducto == OpcProducto.COCA_COLA.getTag()){
+
+        if (numeroProducto == OpcProducto.COCA_COLA.getTag()) {
             producto = OpcProducto.COCA_COLA;
         }
-        if ( numeroProducto == OpcProducto.SPRITE.getTag()){
+        if (numeroProducto == OpcProducto.SPRITE.getTag()) {
             producto = OpcProducto.SPRITE;
         }
-        if ( numeroProducto == OpcProducto.FANTA.getTag()){
+        if (numeroProducto == OpcProducto.FANTA.getTag()) {
             producto = OpcProducto.FANTA;
         }
-        if ( numeroProducto == OpcProducto.SUPER8.getTag()){
+        if (numeroProducto == OpcProducto.SUPER8.getTag()) {
             producto = OpcProducto.SUPER8;
         }
-        if ( numeroProducto == OpcProducto.SNICKERS.getTag()){
+        if (numeroProducto == OpcProducto.SNICKERS.getTag()) {
             producto = OpcProducto.SNICKERS;
         }
 
-        // Verificar que el producto sea valido
         if (producto == null) {
-            monVu.add(mon1);
+            for (Moneda moneda : monedas) {
+                monVu.add(moneda);
+            }
             throw new NoHayProductoException("Selección de producto inválida");
         }
 
-        /* Verificar que la moneda cubre el precio del producto */
-        if (mon1.getValor() < producto.getPrecio()) {
-            monVu.add(mon1);
+        if (totalIngresado < producto.getPrecio()) {
+            for (Moneda moneda : monedas) {
+                monVu.add(moneda);
+            }
             throw new PagoInsuficienteException("Dinero insuficiente para comprar el producto");
         }
 
         Producto productoAComprar = obtenerDelDeposito(producto);
+
         if (productoAComprar == null) {
-            monVu.add(mon1);
+            for (Moneda moneda : monedas) {
+                monVu.add(moneda);
+            }
             throw new NoHayProductoException("No hay stock del producto");
         }
 
-        if (monRec.depositoSize() < 12) {
-            monRec.add(mon1);
+        for (Moneda moneda : monedas) {
+            if (monRec.depositoSize() < 12) {
+                monRec.add(moneda);
+            }
         }
 
         productoComprado.depositar(productoAComprar);
 
-        /* Calculo de vuelto */
-        int vuelto = mon1.getValor() - producto.getPrecio();
+        int vuelto = totalIngresado - producto.getPrecio();
         vuelto = depositarVuelto(vuelto);
     }
 
