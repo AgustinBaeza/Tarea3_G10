@@ -65,8 +65,9 @@ public class Comprador {
      * El metodo busca en la billetera del comprador las monedas que coincidan con los
      * valores elegidos, si las encuentra, las saca de la billetera y las pasa
      * al expendedor para hacer la compra
-     * Si se hace la compra, el comprador recibe el producto y el vuelto entregado
-     * por el expendedor si llega a fallar, como dinero insuficiente, producto agotado
+     * Si se hace la compra, el comprador recibe el vuelto entregado
+     * por el expendedor y llama al usuario que lo retire manualmente.
+     * Si llega a fallar, como dinero insuficiente, producto agotado
      * o falta de monedas disponibles, se muestra un mensaje y se devuelven las monedas
      * a la billetera
      *
@@ -111,7 +112,7 @@ public class Comprador {
 
             exp.comprarProducto(monedasAUsar, tagProducto);
 
-            productoRecibido = exp.getProducto();
+            mensaje = "Compra realizada, retirar en bandeja!";
 
             if (productoRecibido != null) {
                 mensaje = "Compraste " + productoRecibido.consumir() + ", Serie: " + productoRecibido.getNumSerie();
@@ -125,7 +126,7 @@ public class Comprador {
                 billetera.add(vuelto);
             }
 
-        } catch (PagoIncorrectoException | PagoInsuficienteException | NoHayProductoException e) {
+        } catch (PagoIncorrectoException | PagoInsuficienteException | NoHayProductoException | BandejaLlenaException e) {
 
             mensaje = e.getMessage();
 
@@ -135,6 +136,24 @@ public class Comprador {
                 billetera.add(devuelta);
             }
         }
+    }
+
+
+    /**
+     * Retira el producto de la bandeja del expendedor y lo guarda.
+     * Este metodo debe llamarse cuando el usuario hace click en la bandeja de retiro.
+     *
+     * @return true si hay un producto para retirar, false si no hay producto a retirar
+     */
+    public boolean recibirProducto() {
+        Producto prod = exp.getProducto();
+        if ( prod != null ) {
+            productoRecibido = prod;
+            mensaje = "Retiraste: " + prod.consumir() + ", Serie: " + prod.getNumSerie();
+            return true;
+        }
+        mensaje = "No hay producto en la bandeja" ;
+        return false;
     }
 
     /**

@@ -124,7 +124,7 @@ public class Expendedor {
      * @throws NoHayProductoException si el producto no existe o no hay stock
      */
     public void comprarProducto(ArrayList<Moneda> monedas, int numeroProducto)
-            throws PagoIncorrectoException, PagoInsuficienteException, NoHayProductoException {
+            throws PagoIncorrectoException, PagoInsuficienteException, NoHayProductoException, BandejaLlenaException {
 
         if (monedas == null || monedas.isEmpty()) {
             throw new PagoIncorrectoException("No se ingresaron monedas");
@@ -166,6 +166,13 @@ public class Expendedor {
                 monVu.add(moneda);
             }
             throw new PagoInsuficienteException("Dinero insuficiente para comprar el producto");
+        }
+
+        if (productoComprado.tieneProducto()){
+            for (Moneda moneda : monedas) {
+                monVu.add(moneda);
+            }
+            throw new BandejaLlenaException("Hay un producto en bandeja, retire antes de comprar otro");
         }
 
         Producto productoAComprar = obtenerDelDeposito(producto);

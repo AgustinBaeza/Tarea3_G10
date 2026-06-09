@@ -29,7 +29,7 @@ public class PanelPrincipal extends JPanel {
     public PanelPrincipal() {
         expendedor = new Expendedor(10);
         comprador = new Comprador(expendedor);
-        panelExpendedor = new PanelExpendedor(20, 20, 760, 580, expendedor);
+        panelExpendedor = new PanelExpendedor(20, 20, 760, 580, expendedor, comprador);
         panelComprador = new PanelComprador(820, 20, 600, 768, comprador);
 
         setBackground(Color.WHITE);
@@ -41,14 +41,10 @@ public class PanelPrincipal extends JPanel {
                 int mouseX = e.getX();
                 int mouseY = e.getY();
 
-                System.out.println("Click en X: " + mouseX + " Y: " + mouseY);
-
                 panelExpendedor.verificarClick(mouseX, mouseY);
                 panelComprador.procesarClick(mouseX, mouseY);
 
-                if (panelComprador.getProductoMostrado() != null) {
-                    panelExpendedor.mostrarProductoComprado(panelComprador.getProductoMostrado());
-                }
+
 
                 repaint();
             }

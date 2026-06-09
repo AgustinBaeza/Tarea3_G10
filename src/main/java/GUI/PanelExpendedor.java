@@ -1,5 +1,6 @@
 package GUI;
 
+import Logica.Comprador;
 import Logica.DepositoRetiro;
 import Logica.Expendedor;
 import Logica.OpcProducto;
@@ -21,6 +22,7 @@ public class PanelExpendedor {
 
     private int x, y, ancho, alto;
     private Expendedor expendedor;
+    private Comprador comprador;
 
     private PanelDeposito<Bebida> panelCoca;
     private PanelDeposito<Bebida> panelSprite;
@@ -43,12 +45,13 @@ public class PanelExpendedor {
      * @param alto alto del panel
      * @param expendedor expendedor de la interfaz grafica
      */
-    public PanelExpendedor(int x, int y, int ancho, int alto, Expendedor expendedor) {
+    public PanelExpendedor(int x, int y, int ancho, int alto, Expendedor expendedor, Comprador comprador) {
         this.x = x;
         this.y = y;
         this.ancho = ancho;
         this.alto = alto;
         this.expendedor = expendedor;
+        this.comprador = comprador;
 
         int depositosPosX = x + 20;
         int anchoDepositos = 640;
@@ -169,6 +172,11 @@ public class PanelExpendedor {
         int retiroAncho = 80;
         int retiroAlto  = 70;
 
+        // palabra retiro
+        g.setColor(Color.LIGHT_GRAY);
+        g.setFont(new Font("Arial", Font.BOLD, 10));
+        g.drawString(">RETIRAR<", retiroX + 10, retiroY - 5);
+
         // dibujo deposito retiro
         g.setColor(Color.BLACK);
         g.fillRect(retiroX, retiroY, retiroAncho, retiroAlto);
@@ -216,14 +224,14 @@ public class PanelExpendedor {
         if (clickX >= x && clickX <= (x + ancho) && clickY >= y && clickY <= (y + alto)) {
 
             // coordenadas deposito retiro
-            int retiroX = x + 580;
+            int retiroX = x + 665;
             int retiroY = y + 498;
             int retiroAncho = 80;
             int retiroAlto  = 70;
 
             // click en la bandeja de retiro, llama a retirar el producto mediante getProducto
             if (clickX >= retiroX && clickX <= (retiroX + retiroAncho) && clickY >= retiroY && clickY <= (retiroY + retiroAlto)) {
-                expendedor.getProducto();
+                comprador.recibirProducto();
                 return;
             }
 
@@ -240,13 +248,4 @@ public class PanelExpendedor {
         this.y = nuevoY;
     }
 
-    /**
-     * Actualiza el producto que se muestra en la bandeja de retiro del expendedor
-     * Se utiliza para mostrar visualmente el ultimo producto comprado
-     *
-     * @param producto producto que se quiere mostrar en el recuadro de retiro
-     */
-    public void mostrarProductoComprado(Producto producto) {
-        this.ultimoProductoComprado = producto;
-    }
 }

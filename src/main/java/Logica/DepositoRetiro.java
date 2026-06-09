@@ -1,5 +1,6 @@
 package Logica;
 
+import Logica.excepciones.BandejaLlenaException;
 import Logica.producto.*;
 
 /**
@@ -15,13 +16,15 @@ public class DepositoRetiro {
 
     /**
      * Metodo para depositar el producto en la ranura del deposito, solo acepta si el espacio esta libre
+     *
      * @param prod producto de la compra
+     * @throws BandejaLlenaException si hay un producto en bandeja
      */
-    public void depositar(Producto prod) {
+    public void depositar(Producto prod) throws BandejaLlenaException {
         if (producto == null) {
             producto = prod;
         } else {
-            System.out.println("Lleno");
+            throw new BandejaLlenaException("Hay un producto en la bandeja, retire antes de comprar otro");
         }
     }
 

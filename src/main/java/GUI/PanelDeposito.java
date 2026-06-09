@@ -11,6 +11,11 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 
+/**
+ * Clase que representa graficamente un deposito dentro de la interfaz
+ * Logra visualizar productos o monedas en un Deposito, mostrando sus datos
+ * @param <T> tipo de elemento (Moneda o Producto)
+ */
 public class PanelDeposito<T> {
 
     private int x,y,ancho,alto;
@@ -19,7 +24,15 @@ public class PanelDeposito<T> {
     private Image imgCoca, imgSprite, imgFanta, imgSuper8, imgSnickers;
     private Image imgM100, imgM500, imgM1000;
 
-
+    /**
+     * Crea un panel grafico asociado a un deposito
+     *
+     * @param x coordenada x
+     * @param y coordenada y
+     * @param ancho ancho del panel
+     * @param alto alto del panel
+     * @param deposito Deposito de los elementos que se mostraran
+     */
     public PanelDeposito(int x, int y, int ancho, int alto, Deposito<T> deposito){
         this.x = x;
         this.y = y;
@@ -29,7 +42,13 @@ public class PanelDeposito<T> {
         cargarImagenes();
     }
 
-    // metodo para cargar individualmente cada imagen
+    /**
+     * Carga una imagen desde los recursos del proyecto y la escala segun el ancho necesitado
+     *
+     * @param rutaImagen Ruta de la imagen
+     * @param sizes Tamaño del escalar de la imagen
+     * @return Image escalada o null si no se encuentra
+     */
     private Image cargar(String rutaImagen, SizeImagen sizes) {
         URL urlImagen = getClass().getResource(rutaImagen);
 
@@ -41,7 +60,9 @@ public class PanelDeposito<T> {
         return null;
     }
 
-    // metodo para cargar todas las imagenes requeridas
+    /**
+     * Carga todas las imagenes utilizadas por el panel
+     */
     private void cargarImagenes() {
         imgCoca = cargar("/imagenes/cocacola.png", SizeImagen.PRODUCTO);
         imgSprite = cargar("/imagenes/sprite.png", SizeImagen.PRODUCTO);
@@ -54,6 +75,11 @@ public class PanelDeposito<T> {
         imgM1000 = cargar("/imagenes/moneda1000.png", SizeImagen.MONEDA);
     }
 
+    /**
+     * Dibuja el deposito y todos los elemento contenidos en el.
+     *
+     * @param g contexto grafica utilizado para realizar el dibujo
+     */
     public void paintComponent(Graphics g) {
 
         // deposito representado como un rectangulo
@@ -118,7 +144,12 @@ public class PanelDeposito<T> {
         g.drawString("x" + deposito.depositoSize(), x + ancho - 28, y + 15);
     }
 
-    // segun la opcion del producto, retornara la imagen correspondiente
+    /**
+     * Obtiene la imagen asociada a un tipo de producto
+     *
+     * @param tipo Tipo de producto
+     * @return imagen correspondiente al producto
+     */
     private Image obtenerImagenProducto(OpcProducto tipo) {
         switch (tipo) {
             case COCA_COLA:
@@ -136,7 +167,16 @@ public class PanelDeposito<T> {
         }
     }
 
-    // metodo para dibujar cada producto bebida o dulce individualmente
+    /**
+     * Dibuja un producto en las coordenadas dadas y muestra el numero de serie
+     *
+     * @param g contexto grafico
+     * @param prod producto a dibujar
+     * @param prodX coordenada x del producto
+     * @param prodY coordenada y del producto
+     * @param prodAncho ancho de la imagen
+     * @param prodAlto alto de la imagen
+     */
     private void dibujarProducto(Graphics g, Producto prod, int prodX, int prodY, int prodAncho, int prodAlto){
         Image img = obtenerImagenProducto(prod.getProducto());
         g.drawImage(img, prodX, prodY, null);
@@ -147,7 +187,16 @@ public class PanelDeposito<T> {
         g.drawString("#" + prod.getNumSerie(), prodX + 2, prodY + prodAlto - 2);
     }
 
-    // metodo para dibujar moneda individualmente
+    /**
+     * Dibuja una moneda en las coordenadas y muestra su numero de serie
+     *
+     * @param g contexto grafico
+     * @param mon moneda a dibujar
+     * @param monX coordenada x de la moneda
+     * @param monY coordenada y de la moneda
+     * @param monAncho ancho de la imagen
+     * @param monAlto alto de la imagen
+     */
     private void dibujarMoneda(Graphics g, Moneda mon, int monX, int monY, int monAncho, int monAlto) {
         Image img = obtenerImagenMoneda(mon.getValor());
         g.drawImage(img, monX, monY, null);
@@ -158,7 +207,12 @@ public class PanelDeposito<T> {
         g.drawString("#" + mon.getSerie(), monX + 2, monY + monAlto - 2);
     }
 
-    // retorna segun el valor de la moneda
+    /**
+     * Obtiene la imagen correspondiente al valor de una moneda
+     *
+     * @param valor valor de la moneda
+     * @return imagen asociada a la moneda o null si no existe
+     */
     private Image obtenerImagenMoneda(int valor) {
         if (valor == 1000){
             return imgM1000;
@@ -173,7 +227,11 @@ public class PanelDeposito<T> {
         return null;
     }
 
-    // setter de la posicion del deposito completo
+    /**
+     * Actualiza la posicion del panel dentro de la interfaz
+     * @param nuevoX nueva coordenada x
+     * @param nuevoY nueva coordenada y
+     */
     public void setXY(int nuevoX, int nuevoY) {
         this.x = nuevoX;
         this.y = nuevoY;
