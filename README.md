@@ -23,7 +23,7 @@ Desde Main.java se realiza la ejecución del programa.
 
 ## Diagrama UML
 
-
+![Diagrama UML](UML.png)
 
 ---
 
